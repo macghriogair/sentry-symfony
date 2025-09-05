@@ -37,11 +37,11 @@ final class TraceableTagAwareCacheAdapterForV2 implements TagAwareAdapterInterfa
     /**
      * {@inheritdoc}
      *
-     * @param mixed[] $metadata
+     * @param mixed[]|null $metadata
      *
      * @return mixed
      */
-    public function get(string $key, callable $callback, float $beta = null, array &$metadata = null)
+    public function get(string $key, callable $callback, ?float $beta = null, ?array &$metadata = null)
     {
         return $this->traceFunction('cache.get_item', function () use ($key, $callback, $beta, &$metadata) {
             if (!$this->decoratedAdapter instanceof CacheInterface) {
