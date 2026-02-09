@@ -65,8 +65,15 @@ final class SentryExtension extends ConfigurableExtension
      */
     protected function loadInternal(array $mergedConfig, ContainerBuilder $container): void
     {
-        $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
-        $loader->load('services.xml');
+        $locator = new FileLocator(__DIR__ . '/../Resources/config');
+
+        if (class_exists(Loader\XmlFileLoader::class)) {
+            $loader = new Loader\XmlFileLoader($container, $locator);
+            $loader->load('services.xml');
+        } else {
+            $loader = new Loader\PhpFileLoader($container, $locator);
+            $loader->load('services.php');
+        }
 
         if (!$container->hasParameter('env(SENTRY_RELEASE)')) {
             $container->setParameter('env(SENTRY_RELEASE)', PrettyVersions::getRootPackageVersion()->getPrettyVersion());
